@@ -22,9 +22,9 @@ public class VideoToAudioConverter {
 		audioAttributes.setSamplingRate(44100);
 		this.setAudioAttributes(audioAttributes);
 		
-		// Declare Encoding Attributes object and set properties of enoding desired of the converted video.
+		// Declare Encoding Attributes object and set properties of encoding desired of the converted video.
 		EncodingAttributes encodingAttributes = new EncodingAttributes();
-		encodingAttributes.setFormat("mp3");
+		encodingAttributes.setFormat("wav");
 		encodingAttributes.setAudioAttributes(this.getAudioAttributes());
 		this.setEncodingAttributes(encodingAttributes);
 	}
@@ -32,14 +32,14 @@ public class VideoToAudioConverter {
 	public String videoToAudio(String inputFilename) {
 		// Replacing name with mp3 ending
 		String[] words = inputFilename.split("\\.");
-		words[words.length-1] = ".mp3";
-		String outputFilename = "./src/main/resources/Audio/output/" + String.join("", words) + ".mp3";
+		words[words.length-1] = ".wav";
+		String outputFilename = "./src/main/resources/Audio/output/" + String.join("", words);
 		
 		MultimediaObject source = new MultimediaObject(getVideoFromResources(inputFilename));
 		File target = new File(outputFilename);
 		
 		try {
-			System.out.println("Encoding " + inputFilename + " to audio");
+			System.out.println("Transforming " + inputFilename + " to audio");
 			  Encoder encoder = new Encoder();  
 			  encoder.encode(source, target, encodingAttributes);
 			} catch (Exception e) {  
@@ -47,6 +47,7 @@ public class VideoToAudioConverter {
 			   e.printStackTrace();
 			   return null;
 			}
+		System.out.println("Transformed to audio. Output file: " + outputFilename);
 		return outputFilename;
 		
 	}

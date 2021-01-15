@@ -20,10 +20,7 @@ public class VideoToTextTranscriber {
 		String inputFilename = "source.mp4";
 		VideoToAudioConverter videoToAudioConverter = new VideoToAudioConverter();
 		String audioPath = videoToAudioConverter.videoToAudio(inputFilename);
-		System.out.println("Finished on: " + audioPath);
 
-		
-		//words[words.length-1] = "mp3";
 		
 		// Convert EVERY video to audio
 		
