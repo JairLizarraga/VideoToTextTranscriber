@@ -4,8 +4,10 @@ import java.io.File;
 
 import ws.schild.jave.AudioAttributes;
 import ws.schild.jave.EncodingAttributes;
+import ws.schild.jave.InputFormatException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
 
 public class VideoToAudioConverter {
 
@@ -16,7 +18,6 @@ public class VideoToAudioConverter {
 		// Declare Audio Attributes object and set properties of audio desired to be converted.
 		AudioAttributes audioAttributes = new AudioAttributes();
 		audioAttributes.setCodec("libmp3lame");
-		// here 64kbit/s is 64000
 		audioAttributes.setBitRate(128000);
 		audioAttributes.setChannels(2);
 		audioAttributes.setSamplingRate(44100);
@@ -28,14 +29,38 @@ public class VideoToAudioConverter {
 		encodingAttributes.setAudioAttributes(this.getAudioAttributes());
 		this.setEncodingAttributes(encodingAttributes);
 	}
+
+
+	public String videoToAudio(String inputFilename) throws IllegalArgumentException, InputFormatException, EncoderException {
+		File inputFile = new File(inputFilename);
+		
+		String[] words = inputFile.getName().split("\\.");
+		words[words.length-1] = ".wav";
+		String outputFilename = "src/main/resources/Audio/output/" + String.join("", words);
+		
+		MultimediaObject source = new MultimediaObject(inputFile);
+		File target = new File(outputFilename);
+		
+		System.out.println("Transforming " + inputFilename + " to audio");
+		Encoder encoder = new Encoder();  
+		encoder.encode(source, target, encodingAttributes);
+		System.out.println("Transformed to audio. Output file: " + outputFilename);
+		return outputFilename;
+		
+	}
 	
-	public String videoToAudio(String inputFilename) {
+	
+	public String videoToAudio2(String inputFilename) {
 		// Replacing name with mp3 ending
 		String[] words = inputFilename.split("\\.");
 		words[words.length-1] = ".wav";
 		String outputFilename = "./src/main/resources/Audio/output/" + String.join("", words);
 		
-		MultimediaObject source = new MultimediaObject(getVideoFromResources(inputFilename));
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File video = new File(classLoader.getResource("Video/"+inputFilename).getFile());
+        
+		MultimediaObject source = new MultimediaObject(video);
 		File target = new File(outputFilename);
 		
 		try {
@@ -52,10 +77,6 @@ public class VideoToAudioConverter {
 		
 	}
 	
-	private File getVideoFromResources(String filename) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource("Video/"+filename).getFile());
-	}
 
 	public AudioAttributes getAudioAttributes() {
 		return audioAttributes;

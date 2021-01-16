@@ -9,7 +9,6 @@ import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResult;
 import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResults;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,18 +22,12 @@ public class SpeechToTextSystem {
 		speechToText.setServiceUrl("https://api.us-south.speech-to-text.watson.cloud.ibm.com");
 	}
 	
-	public String getTextFromAudio(String filename) throws IOException {
-        File audio = getAudioFromResources("audio2.wav");
-		return doTextRecognition(audio, "es-MX_BroadbandModel");
-	}
-	
-	public File getAudioFromResources(String filename) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource("Audio/"+filename).getFile());
-	}
-	
-	public String doTextRecognition(File audio, String model) throws FileNotFoundException {
+	public String getTextFromAudio(String filepath) throws IOException {
+
+        File audio = new File(filepath);
+        String model = "es-MX_BroadbandModel";
 	    String text = "";
+	    
 		RecognizeOptions options = new RecognizeOptions.Builder()
 				.audio(audio)
 	            .contentType(HttpMediaType.AUDIO_WAV) //select your format
@@ -43,7 +36,6 @@ public class SpeechToTextSystem {
 
 		SpeechRecognitionResults response = speechToText.recognize(options).execute().getResult();
 		
-
 		if(!response.getResults().isEmpty()) {
 			List<SpeechRecognitionResult> transcripts = response.getResults();
 			for(SpeechRecognitionResult res: transcripts) {
