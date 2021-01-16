@@ -32,51 +32,22 @@ public class VideoToAudioConverter {
 
 
 	public String videoToAudio(String inputFilename) throws IllegalArgumentException, InputFormatException, EncoderException {
-		File inputFile = new File(inputFilename);
 		
-		String[] words = inputFile.getName().split("\\.");
+		String[] words = inputFilename.split("\\.");
 		words[words.length-1] = ".wav";
-		String outputFilename = "src/main/resources/Audio/output/" + String.join("", words);
-		
+		String outputFilename = String.join("", words);
+
+		File inputFile = new File(inputFilename);
 		MultimediaObject source = new MultimediaObject(inputFile);
 		File target = new File(outputFilename);
 		
-		System.out.println("Transforming " + inputFilename + " to audio");
+		System.out.print("Converting " + inputFilename + " to audio... ");
 		Encoder encoder = new Encoder();  
 		encoder.encode(source, target, encodingAttributes);
-		System.out.println("Transformed to audio. Output file: " + outputFilename);
+		System.out.println("Done");
 		return outputFilename;
 		
 	}
-	
-	
-	public String videoToAudio2(String inputFilename) {
-		// Replacing name with mp3 ending
-		String[] words = inputFilename.split("\\.");
-		words[words.length-1] = ".wav";
-		String outputFilename = "./src/main/resources/Audio/output/" + String.join("", words);
-		
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File video = new File(classLoader.getResource("Video/"+inputFilename).getFile());
-        
-		MultimediaObject source = new MultimediaObject(video);
-		File target = new File(outputFilename);
-		
-		try {
-			System.out.println("Transforming " + inputFilename + " to audio");
-			  Encoder encoder = new Encoder();  
-			  encoder.encode(source, target, encodingAttributes);
-			} catch (Exception e) {  
-			   /*Handle here the video failure*/   
-			   e.printStackTrace();
-			   return null;
-			}
-		System.out.println("Transformed to audio. Output file: " + outputFilename);
-		return outputFilename;
-		
-	}
-	
 
 	public AudioAttributes getAudioAttributes() {
 		return audioAttributes;

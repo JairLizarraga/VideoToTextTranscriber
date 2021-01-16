@@ -10,6 +10,8 @@ import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResults;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class SpeechToTextSystem {
@@ -22,12 +24,15 @@ public class SpeechToTextSystem {
 		speechToText.setServiceUrl("https://api.us-south.speech-to-text.watson.cloud.ibm.com");
 	}
 	
-	public String getTextFromAudio(String filepath) throws IOException {
-
-        File audio = new File(filepath);
+	public void getTextFromAudio(String filePath) throws IOException {
+        File audio = new File(filePath);
         String model = "es-MX_BroadbandModel";
 	    String text = "";
-	    
+
+		String[] words = filePath.split("\\.");
+		words[words.length-1] = ".txt";
+		String outputFilename = String.join("", words);
+		
 		RecognizeOptions options = new RecognizeOptions.Builder()
 				.audio(audio)
 	            .contentType(HttpMediaType.AUDIO_WAV) //select your format
@@ -44,8 +49,13 @@ public class SpeechToTextSystem {
 					break;
 				}
 			}
+
+			File outputFile = new File(outputFilename);
+			outputFile.createNewFile();
+			Files.write(Paths.get(outputFilename), text.getBytes());
 		}
-		return text;
+		
+		System.out.println("Text created on: " + outputFilename);
 	}
 
 }
