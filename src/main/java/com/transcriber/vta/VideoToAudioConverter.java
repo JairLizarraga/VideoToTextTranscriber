@@ -18,14 +18,14 @@ public class VideoToAudioConverter {
 		// Declare Audio Attributes object and set properties of audio desired to be converted.
 		AudioAttributes audioAttributes = new AudioAttributes();
 		audioAttributes.setCodec("libmp3lame");
-		audioAttributes.setBitRate(128000);
-		audioAttributes.setChannels(2);
-		audioAttributes.setSamplingRate(44100);
+		audioAttributes.setBitRate(256000);
+		audioAttributes.setChannels(1);
+		audioAttributes.setSamplingRate(16000);
 		this.setAudioAttributes(audioAttributes);
 		
 		// Declare Encoding Attributes object and set properties of encoding desired of the converted video.
 		EncodingAttributes encodingAttributes = new EncodingAttributes();
-		encodingAttributes.setFormat("wav");
+		encodingAttributes.setFormat("mp3");
 		encodingAttributes.setAudioAttributes(this.getAudioAttributes());
 		this.setEncodingAttributes(encodingAttributes);
 	}
@@ -34,7 +34,7 @@ public class VideoToAudioConverter {
 	public String videoToAudio(String inputFilename) throws IllegalArgumentException, InputFormatException, EncoderException {
 		
 		String[] words = inputFilename.split("\\.");
-		words[words.length-1] = ".wav";
+		words[words.length-1] = ".mp3";
 		String outputFilename = String.join("", words);
 
 		File inputFile = new File(inputFilename);
@@ -43,6 +43,7 @@ public class VideoToAudioConverter {
 		
 		System.out.print("Converting " + inputFilename + " to audio... ");
 		Encoder encoder = new Encoder();  
+		System.out.println(encoder.getAudioEncoders().toString());
 		encoder.encode(source, target, encodingAttributes);
 		System.out.println("Done");
 		return outputFilename;

@@ -35,27 +35,28 @@ public class SpeechToTextSystem {
 		
 		RecognizeOptions options = new RecognizeOptions.Builder()
 				.audio(audio)
-	            .contentType(HttpMediaType.AUDIO_WAV) //select your format
+	            .contentType(HttpMediaType.AUDIO_MP3) //select your format
 	            .model(model)
 	            .build();
 
 		SpeechRecognitionResults response = speechToText.recognize(options).execute().getResult();
 		
-		if(!response.getResults().isEmpty()) {
-			List<SpeechRecognitionResult> transcripts = response.getResults();
-			for(SpeechRecognitionResult res: transcripts) {
-				if(res.isXFinal()) {
+		try {
+			if(!response.getResults().isEmpty()) {
+				List<SpeechRecognitionResult> transcripts = response.getResults();
+				for(SpeechRecognitionResult res: transcripts) {
 					text += res.getAlternatives().get(0).getTranscript();
-					break;
+					text += ".\n";
 				}
+				File outputFile = new File(outputFilename);
+				outputFile.createNewFile();
+				Files.write(Paths.get(outputFilename), text.getBytes());
+				System.out.println("Text created on: " + outputFilename);
 			}
-
-			File outputFile = new File(outputFilename);
-			outputFile.createNewFile();
-			Files.write(Paths.get(outputFilename), text.getBytes());
+		} catch(NullPointerException e) {
+			System.out.println("*** No se obtuvieron resultados en: " + filePath);
 		}
 		
-		System.out.println("Text created on: " + outputFilename);
 	}
 
 }
